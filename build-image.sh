@@ -257,7 +257,7 @@ fi
 #fi
 
 if [ -f "$FIRMWARE_SRC/ipa_fws.elf" ]; then
-    cp "$FIRMWARE_SRC/ipa_fws.elf" "$ROOTFS_DIR/usr/lib/firmware/"
+    cp "$FIRMWARE_SRC/ipa_fws.elf" "$ROOTFS_DIR/usr/lib/firmware/qcom/sdm850/samsung/w737/"
 else
     echo "警告：未找到 ipa_fws.elf"
 fi
@@ -285,7 +285,7 @@ build() {
     add_file /usr/lib/firmware/qcom/sdm850/samsung/w737/qcdxkmsuc850.mbn
     add_file /usr/lib/firmware/qcom/a630_gmu.bin
     add_file /usr/lib/firmware/qcom/a630_sqe.fw
-    add_file /usr/lib/firmware/ipa_fws.elf
+    add_file /usr/lib/firmware/qcom/sdm850/samsung/w737/ipa_fws.elf
     #add_file /usr/lib/firmware/ipa_fws.mdt
 }
 
