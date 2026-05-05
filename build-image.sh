@@ -114,7 +114,7 @@ pacman -Rdd --noconfirm linux-aarch64 || true
 
 pacman -Syyu --noconfirm \
     fastfetch htop vim terminus-font sudo grub linux-firmware-qcom \
-    arch-install-scripts efibootmgr rmtfs wget iwd
+    arch-install-scripts efibootmgr rmtfs wget iwd networkmanager
 
 wget -O /tmp/tqftpserv-git.pkg.tar.xz \
   https://gitlab.com/kupfer/packages/prebuilts/-/raw/main/aarch64/main/tqftpserv-git-r12.783425b-2-aarch64.pkg.tar.xz
@@ -149,12 +149,9 @@ else
     sed -i 's/^# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
 fi
 
-cat > /etc/systemd/network/20-wifi.network <<'EOF'
-[Match]
-Name=wlan0
-
-[Network]
-DHCP=yes
+cat > /etc/NetworkManager/conf.d/wifi_backend.conf <<'EOF'
+[device]
+wifi.backend=iwd
 EOF
 
 cat > /etc/default/grub <<'EOF'
@@ -165,7 +162,7 @@ GRUB_SERIAL_COMMAND="serial --speed=115200 --unit=0 --word=8 --parity=no --stop=
 GRUB_DEVICETREE="sdm850-samsung-w737"
 EOF
 
-systemctl enable rmtfs pd-mapper tqftpserv iwd
+systemctl enable rmtfs pd-mapper tqftpserv NetworkManager
 SETUPEOF
 
 sed -i "s/ROOT_PASS_PLACEHOLDER/$ROOT_PASS/g" "$ROOTFS_DIR/bootstrap.sh"
@@ -280,9 +277,9 @@ cat > "$ROOTFS_DIR/usr/lib/initcpio/install/w737" <<'HOOKEOF'
 
 build() {
     add_module ufs_qcom
-    add_module ti_sn65dsi86
+    #add_module ti_sn65dsi86
 
-    add_file /usr/lib/firmware/qcom/sdm850/samsung/w737/qcdxkmsuc850.mbn
+    #add_file /usr/lib/firmware/qcom/sdm850/samsung/w737/qcdxkmsuc850.mbn
     add_file /usr/lib/firmware/qcom/a630_gmu.bin
     add_file /usr/lib/firmware/qcom/a630_sqe.fw
     add_file /usr/lib/firmware/qcom/sdm850/samsung/w737/ipa_fws.elf
