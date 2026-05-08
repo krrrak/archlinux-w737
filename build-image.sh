@@ -21,7 +21,7 @@ else
     HOME_DIR="${HOME:-/root}"
 fi
 
-WORKDIR="$HOME_DIR/depot/w737"
+WORKDIR=$(pwd)
 ROOTFS_DIR="$WORKDIR/rootfs"
 IMAGE_FILE="$WORKDIR/w737-arch.img"
 TARBALL="$WORKDIR/ArchLinuxARM-aarch64-latest.tar.gz"
