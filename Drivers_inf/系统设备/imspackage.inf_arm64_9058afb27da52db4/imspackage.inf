@@ -1,0 +1,146 @@
+;
+; @file    imspackage.inf
+;
+; @brief   Windows IMS
+;
+; @author  Jihwan Nam (jihwan.nam@samsung.com)
+;
+; @version Unspecified.
+;
+;**********************************************************************************
+; Standard Section
+;**********************************************************************************
+[Version]
+Signature="$Windows NT$"
+Class=System;
+ClassGuid={4d36e97d-e325-11ce-bfc1-08002be10318}
+Provider=%ManufacturerName%
+CatalogFile=imsdriver.cat
+DriverVer=02/03/2020,14.01.01.001
+
+[Manufacturer]
+%ManufacturerName%=Standard,NTARM64
+
+;[Standard.NTIMSBroker]
+;%DeviceName%=imsdriver, IMSBROKER\IMS02
+[Standard.NTARM64]
+%DeviceName%=imsdriver, MDMCTRL\IMS02
+
+[SourceDisksFiles]
+imsdriver.dll=1
+imsservice.dll=1
+sec-ims.dll=1
+AP_Voice_Engine.dll=1
+;;dmconfig.xml=1
+;;globalsettings.xml=1
+;;imsprofile.xml=1
+;;imsswitch.xml=1
+;;csc_data_ims.ini=1
+;;csc_extra_ims.ini=1
+;;imsscm.exe=1
+
+[SourceDisksNames]
+1 = %DiskName%
+
+;*****************
+; Install Section
+;*****************
+[imsdriver.NT]
+CopyFiles=driver_path,stack_path;;,config_path
+AddReg=imsdriver_registryadd
+
+[DestinationDirs]
+driver_path=12,UMDF 	; 12: System32\drivers\
+stack_path=11 			; 11: System32\
+;;config_path=11,ims 	;     System32\ims\
+
+[driver_path]
+imsdriver.dll
+
+[stack_path]
+imsservice.dll
+sec-ims.dll
+AP_Voice_Engine.dll
+;;imsscm.exe
+
+;;[config_path]
+;;dmconfig.xml
+;;globalsettings.xml
+;;imsprofile.xml
+;;imsswitch.xml
+;;csc_data_ims.ini
+;;csc_extra_ims.ini
+
+
+
+
+[imsdriver.NT.CoInstallers]
+AddReg=CoInstallers_addreg
+
+[CoInstallers_addreg]
+HKR,,CoInstallers32,0x00010000,"WUDFCoinstaller.dll"
+
+[imsdriver_registryadd]
+HKR,,,,%ClassName%
+HKR,,Icon,,"-10"
+
+
+
+
+[imsdriver.NT.Services]
+;0x1(SPSVCINST_TAGTOFRONT)+0x2(SPSVCINST_ASSOCSERVICE)+1f8
+;0x1:there by ensuring that it is loaded first within that group (reflector(WUDFRd) for only ims)
+AddService=WUDFRd,0x000001fb,imsdriver_serviceinstall ;ImsDriver
+;;AddService=ImsSCM,0x00000020, imsscm_serviceinstall ;ImsSCM
+
+[imsdriver_serviceinstall]
+DisplayName = %WudfRdDisplayName%
+ServiceType = 1
+StartType = 3
+ErrorControl = 1
+ServiceBinary = %12%\WUDFRd.sys
+LoadOrderGroup = Base
+
+;;[imsscm_serviceinstall]
+;;DisplayName    = "Ims Scm"
+;;Description    = "Ims Scm"
+;;ServiceType    = 0x10 	;SERVICE_USER_OWN_PROCESS
+;;StartType      = 2    	;SERVICE_AUTO_START
+;;ErrorControl   = 1    	;SERVICE_ERROR_NORNAL
+;;ServiceBinary  = %11%\imsscm.exe ;System32\
+
+
+
+
+[imsdriver.NT.Wdf]
+UmdfService=imsdriver,imsdriver_fileinstall
+UmdfServiceOrder=imsdriver
+UmdfImpersonationLevel=Impersonation
+
+[imsdriver_fileinstall]
+UmdfLibraryVersion=2.0.0 
+ServiceBinary=%12%\UMDF\imsdriver.dll
+
+;*****************
+; For installing WinCMC app
+;*****************
+[imsdriver.NT.Software]
+AddSoftware = Call & Message Continuity, , Software_Inst
+
+[Software_Inst]
+SoftwareType = 2
+SoftwareID=pfn://SAMSUNGELECTRONICSCoLtd.1629760553826_wyx1vj98g3asy
+
+;*****************
+; UnInstall Section
+;*****************
+
+;*****************
+; Generic
+;*****************
+[Strings]
+ManufacturerName="Samsung Electronics Co., Ltd."
+ClassName="Samsung Ims Driver"
+DeviceName="Samsung Ims Driver"
+DiskName = "Driver installation disk"
+WudfRdDisplayName="Windows driver foundation, User-mode driver framework reflector"

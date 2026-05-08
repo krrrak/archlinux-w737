@@ -1,0 +1,67 @@
+;
+; DCHUComponentTest.inf
+;
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=SoftwareComponent
+ClassGuid={5c4c3332-344d-483c-8739-259e934c9cc8}
+Provider=%ManufacturerName%
+CatalogFile=KeyboardService.cat
+DriverVer = 09/11/2018,1.0.0.4
+
+;*****************************************
+; Install Section
+;*****************************************
+
+[Manufacturer]
+%ManufacturerName%=Standard,NTARM64
+
+[Standard.NTARM64]
+;%KeyboardService.DeviceDesc%=KeyboardService_Device, SWC\VEN_KBDM&PID_94kc
+%KeyboardService.DeviceDesc%=KeyboardService_Device, SWC\VEN_SAMS&PID_6883
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+KeyboardService.exe = 1
+vcruntime140.dll = 1
+
+[DestinationDirs]
+DefaultDestDir = 13  ; copy to driverstore
+;DefaultDestDir = 12
+
+[KeyboardService_Device.NT]
+CopyFiles=Drivers_Dir
+
+[Drivers_Dir]
+KeyboardService.exe
+vcruntime140.dll
+
+;-------------- Service installation
+[KeyboardService_Device.NT.Services]
+AddService = , 0x00000002
+AddService = Keyboard Service,0x00000800, KeyboardService_Inst
+;DelReg = KeyboardService_Device.NT.Services.DelReg
+
+;[KeyboardService_Device.NT.Services.DelReg]
+;HKLM,,WOW64
+
+[KeyboardService_Inst]
+DisplayName = %KeyboardServiceDisplayName%
+ServiceType = 0x00000010
+StartType = 2
+;ServiceType = 0x00000020
+;StartType = 3
+ErrorControl = 1
+ServiceBinary = %13%\KeyboardService.exe
+;DelReg = KeyboardService_Device.NT.Services.DelReg
+;AddReg = KeyboardService_Device.NT.Services.DelReg
+
+[Strings]
+ManufacturerName="Samsung Electronics Co.,Ltd."
+ClassName="SoftwareComponent" 
+DiskName = "KeyboardService Installation Disk"
+KeyboardService.DeviceDesc = "KeyboardService Device"
+KeyboardServiceDisplayName="KeyboardService Service"

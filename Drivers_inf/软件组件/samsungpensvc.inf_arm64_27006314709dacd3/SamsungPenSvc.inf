@@ -1,0 +1,68 @@
+;
+; DCHUComponentTest.inf
+;
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=SoftwareComponent
+ClassGuid={5c4c3332-344d-483c-8739-259e934c9cc8}
+Provider=%ManufacturerName%
+CatalogFile=SamsungPenSvc.cat
+DriverVer = 08/02/2018,1.0.0.1
+
+;*****************************************
+; Install Section
+;*****************************************
+
+[Manufacturer]
+%ManufacturerName%=Standard,NTARM64
+
+[Standard.NTARM64]
+%SamsungPenSvc.DeviceDesc%=SamsungPenSvc_Device, SWC\VEN_WCOM&PID_94ac
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+SamsungPenService.exe = 1
+AirCommandLauncher.exe = 1
+vcruntime140.dll = 1
+
+[DestinationDirs]
+DefaultDestDir = 13  ; copy to driverstore
+;DefaultDestDir = 12
+
+[SamsungPenSvc_Device.NT]
+CopyFiles=Drivers_Dir
+
+[Drivers_Dir]
+SamsungPenService.exe
+AirCommandLauncher.exe
+vcruntime140.dll
+
+;-------------- Service installation
+[SamsungPenSvc_Device.NT.Services]
+AddService = , 0x00000002
+AddService = Samsung Pen Service,0x00000800, SamsungPenService_Inst
+;DelReg = SamsungPenSvc_Device.NT.Services.DelReg
+
+;[SamsungPenSvc_Device.NT.Services.DelReg]
+;HKLM,,WOW64
+
+[SamsungPenService_Inst]
+DisplayName = %SamsungPenSvcDisplayName%
+ServiceType = 0x00000010
+StartType = 2
+;ServiceType = 0x00000020
+;StartType = 3
+ErrorControl = 1
+ServiceBinary = %13%\SamsungPenService.exe
+;DelReg = SamsungPenSvc_Device.NT.Services.DelReg
+;AddReg = SamsungPenSvc_Device.NT.Services.DelReg
+
+[Strings]
+ManufacturerName="Samsung Electronics Co.,Ltd."
+ClassName="SoftwareComponent" 
+DiskName = "SamsungPenService Installation Disk"
+SamsungPenSvc.DeviceDesc = "SamsungPenService Device"
+SamsungPenSvcDisplayName="Samsung Pen Service"

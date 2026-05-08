@@ -1,0 +1,72 @@
+;
+; SAMOPanelARM.inf
+;
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=System
+ClassGuid={4d36e97d-e325-11ce-bfc1-08002be10318}
+Provider=%ManufacturerName%
+CatalogFile=SAMOPanelARM.cat
+DriverVer = 09/03/2018,0.0.2.5
+
+[DestinationDirs]
+DefaultDestDir = 12
+Service_Dir=13
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+SAMOPanelARM.sys  = 1,,
+PanelManagerSvc.exe = 1,,
+
+;*****************************************
+; Install Section
+;*****************************************
+
+[Manufacturer]
+%ManufacturerName%=Standard,NTARM64
+
+[Standard.NTARM64]
+%SAMOPanelARM.DeviceDesc%=SAMOPanelARM_Device, ACPI\SAM0101
+
+[SAMOPanelARM_Device.NT]
+CopyFiles=Drivers_Dir
+CopyFiles=Service_Dir
+
+[Drivers_Dir]
+SAMOPanelARM.sys
+
+[Service_Dir]
+PanelManagerSvc.exe
+
+;-------------- Service installation
+[SAMOPanelARM_Device.NT.Services]
+AddService = SAMOPanelARM,%SPSVCINST_ASSOCSERVICE%, SAMOPanelARM_Service_Inst
+AddService = PanelManagerSvc,0x000009f8, PanelManagerSvc_ServiceInstall
+
+; -------------- SAMOPanelARM driver install sections
+[SAMOPanelARM_Service_Inst]
+DisplayName    = %SAMOPanelARM.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\SAMOPanelARM.sys
+
+; -------------- Panel Manager service install sections
+[PanelManagerSvc_ServiceInstall]
+DisplayName    = %PanelManagerSvc.SVCDESC%
+ServiceType    = 0x10            ; SERVICE_KERNEL_DRIVER
+StartType      = 2               ; SERVICE_AUTO_START
+ErrorControl   = 0               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %13%\PanelManagerSvc.exe
+LoadOrderGroup = Base
+
+[Strings]
+SPSVCINST_ASSOCSERVICE= 0x00000002
+ManufacturerName="Samsung Electronics Co., Ltd."
+DiskName = "SAMOPanelARM Installation Disk"
+SAMOPanelARM.DeviceDesc = "SAMOPanelARM Device"
+SAMOPanelARM.SVCDESC = "SAMOPanelARM Service"
+PanelManagerSvc.SVCDESC = "PanelManager Service"

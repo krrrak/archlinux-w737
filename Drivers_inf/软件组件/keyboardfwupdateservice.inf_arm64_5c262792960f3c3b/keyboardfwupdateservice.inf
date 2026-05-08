@@ -1,0 +1,231 @@
+;
+; DCHUComponentTest.inf
+;
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=SoftwareComponent
+ClassGuid={5c4c3332-344d-483c-8739-259e934c9cc8}
+Provider=%ManufacturerName%
+CatalogFile=KeyboardFwUpdateService.cat
+DriverVer = 10/27/2018,1.0.0.9
+
+;*****************************************
+; Install Section
+;*****************************************
+
+[Manufacturer]
+%ManufacturerName%=Standard,NTARM64
+
+[Standard.NTARM64]
+%KeyboardFwUpdateService.DeviceDesc%=KeyboardFwUpdateService_Device, SWC\VEN_SAMS&PID_6884
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+FWUpdateService.exe = 1
+KeyboardToastGenerator.exe = 1
+EJ-CW730_V2.1.5.1.dfu = 1
+Version.txt = 1
+vcruntime140.dll = 1
+Resources.resources = 1,ToastLanguageResources
+Resources.en-US.resources = 1,ToastLanguageResources
+Resources.en-FI.resources = 1,ToastLanguageResources
+Resources.sq-AL.resources = 1,ToastLanguageResources
+Resources.ar-SA.resources = 1,ToastLanguageResources
+Resources.hy-AM.resources = 1,ToastLanguageResources
+Resources.as.resources = 1,ToastLanguageResources
+Resources.az.resources = 1,ToastLanguageResources
+Resources.eu-ES.resources = 1,ToastLanguageResources
+Resources.be-BY.resources = 1,ToastLanguageResources
+Resources.bn.resources = 1,ToastLanguageResources
+Resources.bn-BD.resources = 1,ToastLanguageResources
+Resources.bg-BG.resources = 1,ToastLanguageResources
+Resources.ca-ES.resources = 1,ToastLanguageResources
+Resources.zh-CN.resources = 1,ToastLanguageResources
+Resources.zh-HK.resources = 1,ToastLanguageResources
+Resources.zh-TW.resources = 1,ToastLanguageResources
+Resources.hr-HR.resources = 1,ToastLanguageResources
+Resources.cs-CZ.resources = 1,ToastLanguageResources
+Resources.da-DK.resources = 1,ToastLanguageResources
+Resources.nl-NL.resources = 1,ToastLanguageResources
+Resources.et-EE.resources = 1,ToastLanguageResources
+Resources.fa-IR.resources = 1,ToastLanguageResources
+Resources.fi-FI.resources = 1,ToastLanguageResources
+Resources.fl-PH.resources = 1,ToastLanguageResources
+Resources.fr-FR.resources = 1,ToastLanguageResources
+Resources.fr-CA.resources = 1,ToastLanguageResources
+Resources.gl-ES.resources = 1,ToastLanguageResources
+Resources.ka-GE.resources = 1,ToastLanguageResources
+Resources.de-DE.resources = 1,ToastLanguageResources
+Resources.el-GR.resources = 1,ToastLanguageResources
+Resources.gu-IN.resources = 1,ToastLanguageResources
+Resources.he-IL.resources = 1,ToastLanguageResources
+Resources.hi-IN.resources = 1,ToastLanguageResources
+Resources.hu-HU.resources = 1,ToastLanguageResources
+Resources.is-IS.resources = 1,ToastLanguageResources
+Resources.id-ID.resources = 1,ToastLanguageResources
+Resources.ga.resources = 1,ToastLanguageResources
+Resources.it-IT.resources = 1,ToastLanguageResources
+Resources.ja-JP.resources = 1,ToastLanguageResources
+Resources.kn-IN.resources = 1,ToastLanguageResources
+Resources.kk-KZ.resources = 1,ToastLanguageResources
+Resources.km.resources = 1,ToastLanguageResources
+Resources.ko-KR.resources = 1,ToastLanguageResources
+Resources.ky-KG.resources = 1,ToastLanguageResources
+Resources.lo-LA.resources = 1,ToastLanguageResources
+Resources.lv-LV.resources = 1,ToastLanguageResources
+Resources.lt-LT.resources = 1,ToastLanguageResources
+Resources.mk-MK.resources = 1,ToastLanguageResources
+Resources.ml.resources = 1,ToastLanguageResources
+Resources.ms-MY.resources = 1,ToastLanguageResources
+Resources.mr-IN.resources = 1,ToastLanguageResources
+Resources.mn-MN.resources = 1,ToastLanguageResources
+Resources.my-MM.resources = 1,ToastLanguageResources
+Resources.my.resources = 1,ToastLanguageResources
+Resources.ne-NP.resources = 1,ToastLanguageResources
+Resources.nn-NO.resources = 1,ToastLanguageResources
+Resources.or.resources = 1,ToastLanguageResources
+Resources.pl-PL.resources = 1,ToastLanguageResources
+Resources.pt-PT.resources = 1,ToastLanguageResources
+Resources.pt-LA.resources = 1,ToastLanguageResources
+Resources.pa-IN.resources = 1,ToastLanguageResources
+Resources.ro-RO.resources = 1,ToastLanguageResources
+Resources.ru-RU.resources = 1,ToastLanguageResources
+Resources.sr-SP.resources = 1,ToastLanguageResources
+Resources.si.resources = 1,ToastLanguageResources
+Resources.sk-SK.resources = 1,ToastLanguageResources
+Resources.sl-SI.resources = 1,ToastLanguageResources
+Resources.es-ES.resources = 1,ToastLanguageResources
+Resources.es-LA.resources = 1,ToastLanguageResources
+Resources.sv-SE.resources = 1,ToastLanguageResources
+Resources.tg.resources = 1,ToastLanguageResources
+Resources.ta-IN.resources = 1,ToastLanguageResources
+Resources.te-IN.resources = 1,ToastLanguageResources
+Resources.tk-TK.resources = 1,ToastLanguageResources
+Resources.th-TH.resources = 1,ToastLanguageResources
+Resources.tr-TR.resources = 1,ToastLanguageResources
+Resources.uk-UA.resources = 1,ToastLanguageResources
+Resources.ur-PK.resources = 1,ToastLanguageResources
+Resources.ug.resources = 1,ToastLanguageResources
+Resources.uz-UZ.resources = 1,ToastLanguageResources
+Resources.vi-VN.resources = 1,ToastLanguageResources
+
+[DestinationDirs]
+DefaultDestDir = 13
+Resources_Dir = 13,ToastLanguageResources
+
+[KeyboardFwUpdateService_Device.NT]
+CopyFiles=Drivers_Dir
+CopyFiles=Resources_Dir
+
+[Drivers_Dir]
+FWUpdateService.exe
+KeyboardToastGenerator.exe
+EJ-CW730_V2.1.5.1.dfu
+Version.txt
+vcruntime140.dll
+
+[Resources_Dir]
+Resources.resources
+Resources.en-US.resources
+Resources.en-FI.resources
+Resources.sq-AL.resources
+Resources.ar-SA.resources
+Resources.hy-AM.resources
+Resources.as.resources
+Resources.az.resources
+Resources.eu-ES.resources
+Resources.be-BY.resources
+Resources.bn.resources
+Resources.bn-BD.resources
+Resources.bg-BG.resources
+Resources.ca-ES.resources
+Resources.zh-CN.resources
+Resources.zh-HK.resources
+Resources.zh-TW.resources
+Resources.hr-HR.resources
+Resources.cs-CZ.resources
+Resources.da-DK.resources
+Resources.nl-NL.resources
+Resources.et-EE.resources
+Resources.fa-IR.resources
+Resources.fi-FI.resources
+Resources.fl-PH.resources
+Resources.fr-FR.resources
+Resources.fr-CA.resources
+Resources.gl-ES.resources
+Resources.ka-GE.resources
+Resources.de-DE.resources
+Resources.el-GR.resources
+Resources.gu-IN.resources
+Resources.he-IL.resources
+Resources.hi-IN.resources
+Resources.hu-HU.resources
+Resources.is-IS.resources
+Resources.id-ID.resources
+Resources.ga.resources
+Resources.it-IT.resources
+Resources.ja-JP.resources
+Resources.kn-IN.resources
+Resources.kk-KZ.resources
+Resources.km.resources
+Resources.ko-KR.resources
+Resources.ky-KG.resources
+Resources.lo-LA.resources
+Resources.lv-LV.resources
+Resources.lt-LT.resources
+Resources.mk-MK.resources
+Resources.ml.resources
+Resources.ms-MY.resources
+Resources.mr-IN.resources
+Resources.mn-MN.resources
+Resources.my-MM.resources
+Resources.my.resources
+Resources.ne-NP.resources
+Resources.nn-NO.resources
+Resources.or.resources
+Resources.pl-PL.resources
+Resources.pt-PT.resources
+Resources.pt-LA.resources
+Resources.pa-IN.resources
+Resources.ro-RO.resources
+Resources.ru-RU.resources
+Resources.sr-SP.resources
+Resources.si.resources
+Resources.sk-SK.resources
+Resources.sl-SI.resources
+Resources.es-ES.resources
+Resources.es-LA.resources
+Resources.sv-SE.resources
+Resources.tg.resources
+Resources.ta-IN.resources
+Resources.te-IN.resources
+Resources.tk-TK.resources
+Resources.th-TH.resources
+Resources.tr-TR.resources
+Resources.uk-UA.resources
+Resources.ur-PK.resources
+Resources.ug.resources
+Resources.uz-UZ.resources
+Resources.vi-VN.resources
+
+;-------------- Service installation
+[KeyboardFwUpdateService_Device.NT.Services]
+AddService = , 0x00000002
+AddService = KeyboardFirmwareUpdateService,0x00000800, KeyboardFwUpdateService_Inst
+
+[KeyboardFwUpdateService_Inst]
+DisplayName = %KeyboardFwUpdateServiceDisplayName%
+ServiceType = 0x00000010
+StartType = 2
+ErrorControl = 1
+ServiceBinary = %13%\FWUpdateService.exe
+
+[Strings]
+ManufacturerName="Samsung Electronics Co.,Ltd."
+ClassName="SoftwareComponent" 
+DiskName = "KeyboardFwUpdateService Installation Disk"
+KeyboardFwUpdateService.DeviceDesc = "Keyboard Firmware Update Service Device"
+KeyboardFwUpdateServiceDisplayName="Keyboard Firmware Update Service"

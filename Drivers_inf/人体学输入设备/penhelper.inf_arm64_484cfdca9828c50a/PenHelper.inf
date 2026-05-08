@@ -1,0 +1,95 @@
+/*++
+;
+;Copyright (c) Samsung Electronics Co., Ltd.  All rights reserved.
+;
+;Module Name:
+;    PenHelper.inf
+;
+;Abstract:
+;    INF file for installing the Pen filter driver.
+;
+;--*/
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=HIDClass
+ClassGuid={745a17a0-74d3-11d0-b6fe-00a0c90f57da}
+Provider=%ManufacturerName%
+CatalogFile=PenHelper.cat
+DriverVer = 09/09/2018,1.0.0.3
+
+[DestinationDirs]
+DefaultDestDir = 13
+;SamsungPenService_Dir=16426, "Samsung\Air Command"
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+PenHelper.sys  = 1,,
+
+;*****************************************
+; Install Section
+;*****************************************
+
+[Manufacturer]
+%ManufacturerName%=Standard,NTARM64
+
+[Standard.NTARM64]
+%PenHelper.DeviceDesc%=PenHelper_Device, HID\WCOM0027&Col01
+
+[PenHelper_Device.NT]
+Include = Keyboard.INF
+Needs = HID_Keyboard_Inst.NT
+CopyFiles=Drivers_Dir
+
+[PenHelper_Device.NT.HW]
+Include = Keyboard.INF
+Needs = HID_Keyboard_Inst.NT.HW
+AddReg=PenHelper_Device.HW.AddReg.NT
+
+[PenHelper_Device.HW.AddReg.NT]
+HKR,,"UpperFilters",0x00010000,"PenHelper"
+
+[Drivers_Dir]
+PenHelper.sys
+
+;-------------- Service installation
+[PenHelper_Device.NT.Services]
+Needs = HID_Keyboard_Inst.Services
+AddService = PenHelper,, PenHelper_Service_Inst
+
+
+; -------------- PenHelper driver install sections
+[PenHelper_Service_Inst]
+DisplayName    = %PenHelper.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %13%\PenHelper.sys
+LoadOrderGroup = PNP Filter ;Extended Base
+
+[PenHelper_Device.NT.Wdf]
+KmdfService =  PenHelper, PenHelper_wdfsect
+
+[PenHelper_wdfsect]
+KmdfLibraryVersion = 1.11
+
+; -------------- PenHelper component install sections
+[PenHelper_Device.NT.Components]
+AddComponent = PenHelper_SamsungPenSvcInstall,,PenHelper_ComponentInstall_UserSvcInstall
+;AddComponent = PenHelper_SamsungPenSvc,,PenHelper_ComponentInstall_UserSvc
+
+[PenHelper_ComponentInstall_UserSvcInstall]
+ComponentIds = VEN_WCOM&PID_94ac
+
+;[PenHelper_ComponentInstall_UserSvc]
+;ComponentIds = VEN_WCOM&PID_94ab
+
+[Strings]
+SPSVCINST_ASSOCSERVICE= 0x00000002
+ManufacturerName="Samsung Electronics Co.,Ltd."
+ClassName="HIDClass" 
+DiskName = "PenHelper Installation Disk"
+PenHelper.DeviceDesc = "PenHelper Device"
+PenHelper.SVCDESC = "PenHelper Service"

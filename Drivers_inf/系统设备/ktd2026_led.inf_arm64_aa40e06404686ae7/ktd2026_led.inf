@@ -1,0 +1,91 @@
+;/*++
+;
+;Module Name:
+;    KTD2026_LED.INF
+;
+;Abstract:
+;    INF file for installing the Vib Driver
+;
+;Installation Notes: 
+;    Using Devcon: Type "devcon update KTD2026_LED.inf ACPI\KTD2026_LED" to install
+;
+;--*/
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=System
+ClassGuid={4d36e97d-e325-11ce-bfc1-08002be10318}
+Provider=%COMP%
+DriverVer = 09/11/2018,1.0.0.3
+CatalogFile=KTD2026_LED.cat
+
+[SourceDisksNames]
+;3426=windows cd
+1=windows cd
+
+[SourceDisksFiles]
+;KTD2026_LED.sys = 3426
+KTD2026_LED.sys = 1
+
+;12 == Windows\System32\Drivers
+[DestinationDirs]
+DefaultDestDir = 12
+
+[ControlFlags]
+ExcludeFromSelect=*
+
+;*****************************************
+; KTD2026_LED client driver Install Section
+;*****************************************
+
+[Manufacturer]
+%COMP%=LED_Device,NTARM64
+
+[LED_Device.NTARM64]
+%KTD2026_LED.DeviceDesc%=LED_Inst,ACPI\SAM0608
+
+[LED_Inst.NT]
+Copyfiles = LEDCopyFiles
+
+[LEDCopyFiles]
+;KTD2026_LED.sys,,,0x100
+KTD2026_LED.sys
+
+[LED_Inst.NT.Services]
+AddService = KTD2026_LED,%SPSVCINST_ASSOCSERVICE%,LED_Service_Inst
+
+[LED_Service_Inst]
+DisplayName    = %KTD2026_LED.SvcDesc%
+ServiceType    = %SERVICE_KERNEL_DRIVER%
+StartType      = %SERVICE_DEMAND_START%
+ErrorControl   = %SERVICE_ERROR_NORMAL%
+ServiceBinary  = %12%\KTD2026_LED.sys
+LoadOrderGroup = Extended Base
+AddReg=KTD2026_LEDReg
+
+[KTD2026_LEDReg]
+HKR,,DeviceCharacteristics,0x10001,0x100 ; FILE_DEVICE_SECURE_OPEN
+
+[Strings]
+;Localizable Strings
+COMP       = "Samsung Electronics Co., Ltd."
+KTD2026_LED.SvcDesc    = "KTD2026_LED Service"
+KTD2026_LED.DeviceDesc = "KTD2026_LED Device"
+
+;Non-Localizable Strings
+SPSVCINST_TAGTOFRONT   = 0x00000003
+SPSVCINST_ASSOCSERVICE = 0x00000002
+SERVICE_KERNEL_DRIVER  = 1
+SERVICE_BOOT_START     = 0
+SERVICE_SYSTEM_START   = 1
+SERVICE_DEMAND_START   = 3
+SERVICE_ERROR_NORMAL   = 1
+SERVICE_ERROR_IGNORE   = 0
+SERVICE_ERROR_CRITICAL = 3
+REG_EXPAND_SZ          = 0x00020000
+REG_DWORD              = 0x00010001
+REG_SZ                 = 0x00000000
+
+
+
+

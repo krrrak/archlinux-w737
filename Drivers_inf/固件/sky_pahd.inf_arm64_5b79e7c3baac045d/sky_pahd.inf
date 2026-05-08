@@ -1,0 +1,47 @@
+[Version]                                                       		
+Signature = $WINDOWS NT$                                     		
+Class = Firmware                                                 	    
+ClassGuid = {f2e7dd72-6468-4e36-b6f1-6488f42c1b52}    		
+Provider = %DRIVER_PROVIDER%
+DriverVer = 06/19/2019, 1.0.0002.0005    		
+CatalogFile = sky_pahd.cat   		
+PnpLockdown = 1
+
+[Manufacturer]          		
+%DRIVER_MANUFACTURER% = Firmware, NTarm64  
+  				
+[Firmware.NTarm64]   		
+%DRIVER_DESC% = Firmware_Install, UEFI\RES_{8768DED1-ECF0-4789-A5C2-21CAB7150224}
+   				
+[Firmware_Install.NT]   		
+CopyFiles = Firmware_CopyFiles
+   				
+[Firmware_Install.NT.Hw]   		
+AddReg = Firmware_AddReg.Hw   
+
+[Firmware_AddReg.Hw]          		
+HKR,,FirmwareId,,{8768DED1-ECF0-4789-A5C2-21CAB7150224}  		
+HKR,,FirmwareVersion,%REG_DWORD%,0x00020005  		
+HKR,,FirmwareFilename,,{8768DED1-ECF0-4789-A5C2-21CAB7150224}\sky_pahd.cap 
+   				
+[Firmware_CopyFiles]   		
+sky_pahd.cap
+   				
+[DestinationDirs]   		
+DefaultDestDir = %DIRID_WINDOWS%, Firmware\{8768DED1-ECF0-4789-A5C2-21CAB7150224}
+   		
+[SourceDisksFiles]   		
+sky_pahd.cap = 1
+    				
+[SourceDisksNames]  		
+1 = %DISK_NAME%   
+
+[Strings]          		
+DRIVER_PROVIDER  = "Samsung Electronics Co., Ltd."  		
+DRIVER_MANUFACTURER  = "Samsung Electronics Co., Ltd."  		
+DRIVER_DESC = "SAMSUNG ELECTRONICS System Firmware"   		
+DISK_NAME     = "Firmware Update"   
+    				
+REG_DWORD = 0x00010001   		
+DIRID_WINDOWS = 10 
+ 

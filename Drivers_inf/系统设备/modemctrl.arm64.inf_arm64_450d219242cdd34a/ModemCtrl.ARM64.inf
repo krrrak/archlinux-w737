@@ -1,0 +1,227 @@
+/*++
+;
+;Copyright (c) Samsung Electronics Co., Ltd.  All rights reserved.
+;
+;Module Name:
+;    ModemCtrl.INF
+;
+;Abstract:
+;    INF file for installing the Modem Control driver for Xmm726x
+;
+;--*/
+
+;**********************************************************************************
+; Standard Section
+;**********************************************************************************
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=System
+ClassGuid={4d36e97d-e325-11ce-bfc1-08002be10318}
+Provider=%ManufacturerName%
+CatalogFile=ModemCtrl.cat
+DriverVer = 05/22/2019,17.28.57.985
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+ModemCtrl.sys=1
+SecRilProxy.dll=1
+SRil10.dll=1
+SAR.dll=1
+RCDService.exe=1
+MdmLdrSvc.exe=1
+ToastGenerator.exe=1
+SecUTSSvc.exe=1
+customizations.bin=1
+customizationsvzw.bin=1
+ToastResource_20180816.zip=1
+[DestinationDirs]
+DefaultDestDir = 12
+Modem_Dir=11
+SRIL_Dir=12,UMDF ; copy to drivers\umdf
+SAR_Dir=12,UMDF ; copy to drivers\umdf
+TG_Dir=10,ToastGenerator
+
+[Modem_Dir]
+SecRilProxy.dll
+RCDService.exe
+MdmLdrSvc.exe
+SecUTSSvc.exe
+customizations.bin
+customizationsvzw.bin
+
+[SRIL_Dir]
+Sril10.dll
+
+[SAR_Dir]
+SAR.dll
+
+[TG_Dir]
+ToastGenerator.exe
+ToastResource_20180816.zip
+
+
+[Strings]
+ManufacturerName ="Samsung Electronics Co., Ltd."
+DiskName = "ModemCtrl Installation Disk"
+ModemCtrlDeviceDesc = "ModemCtrl Device"
+ModemCtrlSvcDesc = "ModemCtrl Service"
+MdmLdrSvcSvcDesc = "Samsung Modem Loader Service"
+SRIL10DeviceDesc= "SRil10 Device"
+SARDeviceDesc= "SAR Device"
+WudfRdDisplayName = "Windows Driver Foundation - User-mode Driver Framework Reflector"
+SPSVCINST_ASSOCSERVICE= 0x00000002
+RCDServiceSvcDesc= "Samsung Radio Control Delegation Service"
+SecUTSSvcDesc="Samsung UTS Service"
+
+[Manufacturer]
+%ManufacturerName%=StandardDeviceList,NTARM64
+
+[StandardDeviceList.NTARM64]
+%ModemCtrlDeviceDesc%=ModemCtrl_Device, ACPI\VEN_SAM&DEV_0602&SUBSYS_C153144D
+%ModemCtrlDeviceDesc%=ModemCtrl_Device, ACPI\VEN_SAM&DEV_0602
+
+%SRIL10DeviceDesc%=SRIL10_Device, MDMCTRL\SRIL02
+
+%SARDeviceDesc%=SAR_Device, MDMCTRL\SAR02
+
+;**********************************************************************************
+; Install Section - ModemCtrl Driver
+;**********************************************************************************
+
+[ModemCtrl_Device.NT]
+CopyFiles=ModemCtrlDriverCopyFiles,Modem_Dir,TG_Dir
+AddReg=Modem_Regs
+
+[ModemCtrlDriverCopyFiles]
+ModemCtrl.sys,,,2
+
+[Modem_Regs]
+HKLM,SYSTEM\CurrentControlSet\Services\MdmLdrSvc,Version,0x01000,4.0.1.46
+HKLM,SYSTEM\CurrentControlSet\Services\MdmLdrSvc,CosaPkgVersion,0x01000,1.33
+; Will be handled by Sec Ext, HKLM,SYSTEM\CurrentControlSet\Services\MdmLdrSvc\Parameters,Distribute,0x11001,0x00000001
+; Block for Non-Verbose Logging, HKLM,SYSTEM\CurrentControlSet\Services\MdmLdrSvc\Parameters,ulZoneMask,0x11001,0x0004000E
+;HKLM,SYSTEM\CurrentControlSet\Services\Qcsubsys\Parameters,ModemRestartCrashDetection,0x11001,0x00000001              ;// Should remove when Official Releasing
+;HKLM,SYSTEM\CurrentControlSet\Services\Qcsubsys\Parameters,SkipMBAReloadBeforeBugcheck,0x11001,0x00000001              ;// Should remove when Official Releasing
+;HKLM,SYSTEM\CurrentControlSet\Services\QCCDI\Parameters,BugCheckList,0x00010000,"0x14B"                                ;// Should remove when Official Releasing
+;HKLM,SYSTEM\CurrentControlSet\Services\QCCDI\Parameters,ForceOfflineDumpType,0x11001,0x00000001                      ;// Should remove when Official Releasing
+HKLM,SYSTEM\CurrentControlSet\Services\ModemCtrl\Parameters,FeatureFlags,0x11001,0x00000008                             ;// To Remove IMS Node, QCMBRG Node
+HKLM,SYSTEM\CurrentControlSet\Services\QCDIAGROUTER\Parameters,ServerName,0x01000,127.0.0.1                            ;//IP 127.0.0.1
+HKLM,SYSTEM\CurrentControlSet\Services\Qcsubsys\Parameters,ChildRemovalTimeout,0x11001,0x00000008  ;// To avoid subsys BSOD during SSR. Case 03630090
+
+[ModemCtrl_Device.NT.Services]
+AddService = ModemCtrl,%SPSVCINST_ASSOCSERVICE%, ModemCtrl_ServiceInstall
+AddService = MdmLdrSvc,0x000009f8, ModemLoader_ServiceInstall
+AddService = RCD,0x00000020, RCD_ServiceInstall
+AddService = SecUTSSvc,0x00000020, UTS_ServiceInstall
+
+[ModemCtrl_ServiceInstall]
+DisplayName    = %ModemCtrlSvcDesc%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\ModemCtrl.sys
+LoadOrderGroup = Extended Base
+
+[ModemLoader_ServiceInstall]
+DisplayName    = %MdmLdrSvcSvcDesc%
+Description    = %MdmLdrSvcSvcDesc%
+ServiceType    = 0x10               ; SERVICE_KERNEL_DRIVER
+StartType      = 2               ; SERVICE_AUTO_START
+ErrorControl   = 0               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %11%\MdmLdrSvc.exe
+LoadOrderGroup = Base
+
+[RCD_ServiceInstall]
+DisplayName    = %RCDServiceSvcDesc%
+Description    = %RCDServiceSvcDesc%
+ServiceType    = 0x10               ; SERVICE_KERNEL_DRIVER
+StartType      = 2               ; SERVICE_AUTO_START
+ErrorControl   = 0               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %11%\RCDService.exe
+LoadOrderGroup = Base
+
+[UTS_ServiceInstall]
+DisplayName    = %SecUTSSvcDesc%
+Description    = %SecUTSSvcDesc%
+ServiceType    = 0x10               ; SERVICE_KERNEL_DRIVER
+StartType      = 2               ; SERVICE_AUTO_START
+ErrorControl   = 0               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %11%\SecUTSSvc.exe
+LoadOrderGroup = Base
+;**********************************************************************************
+; Install Section - SRIL10 Driver
+;**********************************************************************************
+
+[SRIL10_Device.NT]
+CopyFiles=SRIL_Dir
+
+[SRIL10_Device.NT.hw]
+;Must have
+
+[SRIL10_Device.NT.Services]
+AddService=WUDFRd,0x000001fa,SRIL10_ServiceInstall
+
+[SRIL10_Device.NT.CoInstallers]
+AddReg=CoInstallers_AddReg
+
+[SRIL10_Device.NT.Wdf]
+UmdfService=SRil10,SRil10_Install
+UmdfServiceOrder=SRil10
+UmdfImpersonationLevel=Impersonation
+UmdfHostProcessSharing = ProcessSharingDisabled    ; Disabled because of GPS UMDF driver crash
+
+[SRil10_Install]
+UmdfLibraryVersion=2.0.0 
+ServiceBinary=%12%\UMDF\SRil10.dll
+
+[SRIL10_ServiceInstall]
+DisplayName = %WudfRdDisplayName%
+ServiceType = 1     ;SERVICE_KERNEL_DRIVER
+StartType = 3       ;SERVICE_DEMAND_START
+ErrorControl = 1    ;SERVICE_ERROR_NORMAL
+ServiceBinary = %12%\WUDFRd.sys
+LoadOrderGroup = Base
+
+[CoInstallers_AddReg]
+HKR,,CoInstallers32,0x00010000,"WUDFCoinstaller.dll"
+
+
+;**********************************************************************************
+; Install Section - SAR Driver
+;**********************************************************************************
+
+[SAR_Device.NT]
+CopyFiles=SAR_Dir
+
+[SAR_Device.NT.hw]
+;Must have
+
+[SAR_Device.NT.Services]
+AddService=WUDFRd,0x000001fa,SAR_ServiceInstall
+
+[SAR_Device.NT.CoInstallers]
+AddReg=SAR_CoInstallers_AddReg
+
+[SAR_Device.NT.Wdf]
+UmdfService=SAR,SAR_Install
+UmdfServiceOrder=SAR
+UmdfHostProcessSharing = ProcessSharingDisabled    ; Disabled because of GPS UMDF driver crash
+
+[SAR_Install]
+UmdfLibraryVersion=2.0.0 
+ServiceBinary=%12%\UMDF\SAR.dll
+
+[SAR_ServiceInstall]
+DisplayName = %WudfRdDisplayName%
+ServiceType = 1     ;SERVICE_KERNEL_DRIVER
+StartType = 3       ;SERVICE_DEMAND_START
+ErrorControl = 1    ;SERVICE_ERROR_NORMAL
+ServiceBinary = %12%\WUDFRd.sys
+LoadOrderGroup = Base
+
+[SAR_CoInstallers_AddReg]
+HKR,,CoInstallers32,0x00010000,"WUDFCoinstaller.dll"
+
