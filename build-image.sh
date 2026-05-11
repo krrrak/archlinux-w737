@@ -248,10 +248,10 @@ if [ -d "$FIRMWARE_SRC/qcom" ]; then
     mkdir -p "$ROOTFS_DIR/usr/lib/firmware/qcom/sdm850/samsung/w737"
     rsync -a "$FIRMWARE_SRC/qcom/" "$ROOTFS_DIR/usr/lib/firmware/qcom/sdm850/samsung/w737/"
 fi
-#if [ -d "$FIRMWARE_SRC/lib/firmware/postmarketos" ]; then
-#    mkdir -p "$ROOTFS_DIR/usr/lib/firmware/postmarketos"
-#    rsync -a "$FIRMWARE_SRC/lib/firmware/postmarketos/" "$ROOTFS_DIR/usr/lib/firmware/postmarketos/"
-#fi
+
+if [ -d "$WORKDIR/pd-mapper-overlay" ]; then
+    cp -r "$WORKDIR/pd-mapper-overlay/usr" "$ROOTFS_DIR/"
+fi
 
 if [ -f "$FIRMWARE_SRC/ipa_fws.elf" ]; then
     cp "$FIRMWARE_SRC/ipa_fws.elf" "$ROOTFS_DIR/usr/lib/firmware/qcom/sdm850/samsung/w737/"
@@ -282,7 +282,8 @@ build() {
     #add_file /usr/lib/firmware/qcom/sdm850/samsung/w737/qcdxkmsuc850.mbn
     add_file /usr/lib/firmware/qcom/a630_gmu.bin
     add_file /usr/lib/firmware/qcom/a630_sqe.fw
-    add_file /usr/lib/firmware/qcom/sdm850/samsung/w737/ipa_fws.elf
+    # ipa_fws.elf removed — loading it crashes the machine
+    # add_file /usr/lib/firmware/qcom/sdm850/samsung/w737/ipa_fws.elf
     #add_file /usr/lib/firmware/ipa_fws.mdt
 }
 
